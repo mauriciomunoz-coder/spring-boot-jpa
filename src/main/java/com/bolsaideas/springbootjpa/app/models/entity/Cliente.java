@@ -1,6 +1,8 @@
 package com.bolsaideas.springbootjpa.app.models.entity;
 
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,14 +23,15 @@ public class Cliente implements Serializable {
 
     @Column(name = "create_at")
     @Temporal(TemporalType.DATE) //solo se guarda la fecha
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createAt;
 
 
     //crea la fecha automaticamente, por eso no se pone en el formulario
-    @PrePersist
+    /*@PrePersist
     public void prePersist() {
         createAt = new Date();
-    }
+    }*/
 
 
     public Long getId() {
