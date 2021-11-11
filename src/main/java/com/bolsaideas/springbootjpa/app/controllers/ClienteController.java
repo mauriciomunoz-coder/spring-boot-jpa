@@ -16,6 +16,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import java.util.Map;
 
 @Controller
+@SessionAttributes("cliente")
 public class ClienteController {
 
 
@@ -39,15 +40,34 @@ public class ClienteController {
         return "/form";
     }
 
+
+    @RequestMapping(value = "/form/{id}")
+    public String editar(@PathVariable(value = "id") Long id, Map<String, Object> model) {
+
+        Cliente cliente = null;
+
+        if (id > 0) {
+            cliente = clienteDao.findOne(id);
+        }
+        else{
+            return "redirect:/listar";
+        }
+        model.put("cliente", cliente);
+        model.put("titulo", "Editar Cliente");
+        return "/form";
+    }
+
+
     //guarda el cliente en la BD
     @RequestMapping(value = "/form", method = RequestMethod.POST)
-    public String guardar(@Valid Cliente cliente, BindingResult result, Model model) {
+    public String guardar(@Valid Cliente cliente, BindingResult result, Model model, SessionStatus status) {
 
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             model.addAttribute("titulo", "Formulario de Cliente");
             return "form";
         }
         clienteDao.save(cliente);
+        status.setComplete(); //elimina el objeto de la sesion
         return "redirect:/listar";
     }
 }

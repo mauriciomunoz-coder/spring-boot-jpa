@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @Repository
-public class ClienteDaoImpl implements IClienteDao{
+public class ClienteDaoImpl implements IClienteDao {
 
     @PersistenceContext
     private EntityManager em;
@@ -26,6 +26,16 @@ public class ClienteDaoImpl implements IClienteDao{
     @Transactional
     @Override
     public void save(Cliente cliente) {
-        em.persist(cliente);
+        if (cliente.getId() != null && cliente.getId() > 0) {  //si el id es diferente a null y mayor que cero actualicelo
+            em.merge(cliente);
+        } else {
+            em.persist(cliente);  // de lo contrario cree un nuevo cliente en la BD
+        }
+    }
+
+    @Override
+    public Cliente findOne(Long id) {
+        return em.find(Cliente.class, id);
+
     }
 }
