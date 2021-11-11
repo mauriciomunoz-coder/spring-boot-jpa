@@ -32,7 +32,7 @@ public class ClienteController {
     public String crear(Map<String, Object> model) {
         Cliente cliente = new Cliente();
         model.put("titulo", "Formulario de Cliente");
-        model.put("clientes", cliente);
+        model.put("cliente", cliente);
         return "/form";
     }
 

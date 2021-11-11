@@ -24,6 +24,13 @@ public class Cliente implements Serializable {
     private Date createAt;
 
 
+    //crea la fecha automaticamente, por eso no se pone en el formulario
+    @PrePersist
+    public void prePersist() {
+        createAt = new Date();
+    }
+
+
     public Long getId() {
         return id;
     }
