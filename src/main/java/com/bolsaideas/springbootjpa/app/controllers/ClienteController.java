@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import com.bolsaideas.springbootjpa.app.models.dao.IClienteDao;
 import com.bolsaideas.springbootjpa.app.models.entity.Cliente;
+import com.bolsaideas.springbootjpa.app.models.service.IClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
-import java.util.Map;
+
 
 @Controller
 @SessionAttributes("cliente")
@@ -21,13 +22,13 @@ public class ClienteController {
 
 
     @Autowired
-    private IClienteDao clienteDao;
+    private IClienteService ClienteService;
 
 
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public String listar(Model model) {
         model.addAttribute("titulo", "Listado de Clientes");
-        model.addAttribute("clientes", clienteDao.findAll());
+        model.addAttribute("clientes", ClienteService.findAll());
         return "listar";
     }
 
@@ -47,7 +48,7 @@ public class ClienteController {
         Cliente cliente = null;
 
         if (id > 0) {
-            cliente = clienteDao.findOne(id);
+            cliente = ClienteService.findOne(id);
         } else {
             return "redirect:/listar";
         }
@@ -65,7 +66,7 @@ public class ClienteController {
             model.addAttribute("titulo", "Formulario de Cliente");
             return "form";
         }
-        clienteDao.save(cliente);
+        ClienteService.save(cliente);
         status.setComplete(); //elimina el objeto de la sesion
         return "redirect:/listar";
     }
@@ -73,7 +74,7 @@ public class ClienteController {
     @GetMapping(value = "/eliminar/{id}")
     public String eliminar(@PathVariable(value = "id") Long id) {
         if (id > 0) {
-            clienteDao.delete(id);
+            ClienteService.delete(id);
         }
         return "redirect:/listar";
     }

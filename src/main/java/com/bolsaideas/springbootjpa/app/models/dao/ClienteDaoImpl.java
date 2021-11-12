@@ -16,14 +16,14 @@ public class ClienteDaoImpl implements IClienteDao {
     private EntityManager em;
 
 
-    @Transactional(readOnly = true)
+
     @Override
     public List<Cliente> findAll() {
         return em.createQuery("from Cliente").getResultList();
     }
 
 
-    @Transactional
+
     @Override
     public void save(Cliente cliente) {
         if (cliente.getId() != null && cliente.getId() > 0) {  //si el id es diferente a null y mayor que cero actualicelo
@@ -33,7 +33,7 @@ public class ClienteDaoImpl implements IClienteDao {
         }
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public Cliente findOne(Long id) {
         return em.find(Cliente.class, id);
