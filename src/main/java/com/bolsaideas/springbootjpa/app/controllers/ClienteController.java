@@ -48,8 +48,7 @@ public class ClienteController {
 
         if (id > 0) {
             cliente = clienteDao.findOne(id);
-        }
-        else{
+        } else {
             return "redirect:/listar";
         }
         model.put("cliente", cliente);
@@ -68,6 +67,14 @@ public class ClienteController {
         }
         clienteDao.save(cliente);
         status.setComplete(); //elimina el objeto de la sesion
+        return "redirect:/listar";
+    }
+
+    @GetMapping(value = "/eliminar/{id}")
+    public String eliminar(@PathVariable(value = "id") Long id) {
+        if (id > 0) {
+            clienteDao.delete(id);
+        }
         return "redirect:/listar";
     }
 }
