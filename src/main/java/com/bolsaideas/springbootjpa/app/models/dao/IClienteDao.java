@@ -1,19 +1,10 @@
 package com.bolsaideas.springbootjpa.app.models.dao;
 
 import com.bolsaideas.springbootjpa.app.models.entity.Cliente;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 
 
+public interface IClienteDao extends CrudRepository<Cliente, Long> {
 
-public interface IClienteDao {
 
-    public List<Cliente> findAll();
-
-    public void save(Cliente cliente);
-
-    public Cliente findOne(Long id);
-
-    public void delete(Long id);
 }
