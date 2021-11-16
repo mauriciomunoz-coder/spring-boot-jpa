@@ -4,7 +4,6 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import com.bolsaideas.springbootjpa.app.models.dao.IClienteDao;
 import com.bolsaideas.springbootjpa.app.models.entity.Cliente;
 import com.bolsaideas.springbootjpa.app.models.service.IClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
