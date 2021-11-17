@@ -7,6 +7,9 @@ import javax.validation.Valid;
 import com.bolsaideas.springbootjpa.app.models.entity.Cliente;
 import com.bolsaideas.springbootjpa.app.models.service.IClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,9 +28,13 @@ public class ClienteController {
 
 
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
-    public String listar(Model model) {
+    public String listar(@RequestParam(name = "page", defaultValue = "0") int page,  Model model) {
+
+        Pageable pageRequest =  PageRequest.of(page, 4);
+
+        Page<Cliente> clientes = ClienteService.findAll(pageRequest);  //recupera una lista paginada
         model.addAttribute("titulo", "Listado de Clientes");
-        model.addAttribute("clientes", ClienteService.findAll());
+        model.addAttribute("clientes", clientes);
         return "listar";
     }
 
