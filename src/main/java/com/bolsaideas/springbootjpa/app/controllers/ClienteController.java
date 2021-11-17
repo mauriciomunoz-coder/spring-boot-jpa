@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import com.bolsaideas.springbootjpa.app.models.entity.Cliente;
 import com.bolsaideas.springbootjpa.app.models.service.IClienteService;
+import com.bolsaideas.springbootjpa.app.util.paginator.PageRender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,8 +34,11 @@ public class ClienteController {
         Pageable pageRequest =  PageRequest.of(page, 4);
 
         Page<Cliente> clientes = ClienteService.findAll(pageRequest);  //recupera una lista paginada
+
+        PageRender<Cliente> pageRender = new PageRender<>("/listar", clientes); //objeto con la lista de clientes y la url a donde va dirigida
         model.addAttribute("titulo", "Listado de Clientes");
         model.addAttribute("clientes", clientes);
+        model.addAttribute("page", pageRender); //pasamos el objeto pageRender a la vista
         return "listar";
     }
 
