@@ -6,16 +6,11 @@ package com.bolsaideas.springbootjpa.app.models.entity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -51,7 +46,13 @@ public class Cliente implements Serializable {
 
     private String foto;
 
+    @OneToMany(mappedBy = "cliente" ,fetch = FetchType.LAZY, cascade =  CascadeType.ALL )
+    private List<Factura> facturas;
 
+
+    public Cliente(){
+        facturas = new ArrayList<Factura>();
+    }
     //crea la fecha automaticamente, por eso no se pone en el formulario
     /*@PrePersist
     public void prePersist() {
@@ -105,5 +106,18 @@ public class Cliente implements Serializable {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public List<Factura> getFacturas() {
+        return facturas;
+    }
+
+    public void setFacturas(List<Factura> facturas) {
+        this.facturas = facturas;
+    }
+
+    //inserta las facturas en la lista facturas
+    public void addFactura(Factura factura) {
+        facturas.add(factura);
     }
 }
