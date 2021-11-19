@@ -104,8 +104,8 @@ public class ClienteController {
 
         // *****************  codigo que guarda la imagen o foto  *******************************
         if (!foto.isEmpty()){
-            Path directorioRecursos = Paths.get("src//main//resources//static/uploads");  //ruta donde se guardaran nuestras imagenes
-            String rootPath = directorioRecursos.toFile().getAbsolutePath();
+
+            String rootPath = "C://Temp//uploads";
 
             try {
                 byte[] bytes = foto.getBytes();
