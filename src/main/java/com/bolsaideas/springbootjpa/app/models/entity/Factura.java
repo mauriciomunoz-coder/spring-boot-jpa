@@ -2,7 +2,9 @@ package com.bolsaideas.springbootjpa.app.models.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -27,16 +29,22 @@ public class Factura implements Serializable {
     private Cliente cliente;
 
 
-
     //genera la fecha automaticamente
-     @PrePersist
+    @PrePersist
     public void prePersist() {
         createAt = new Date();
     }
 
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "factura_id")  //crea la llave foranea en la tabla factura_items de la BD - se hace cuando la relacion es unidireccional
+    private List<ItemFactura> items;
 
 
+    //inicializamos la lista items
+    public Factura(){
+        this.items = new ArrayList<ItemFactura>();
+    }
 
     public Long getId() {
         return id;
@@ -76,6 +84,19 @@ public class Factura implements Serializable {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public List<ItemFactura> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemFactura> items) {
+        this.items = items;
+    }
+
+    //agrega varios item a la lista items
+    public void addItemFactura(ItemFactura item){
+        this.items.add(item);
     }
 
     private static final long serialVersionUID = 1L;
