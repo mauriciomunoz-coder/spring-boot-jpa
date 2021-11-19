@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
+import java.util.*;
 
 import javax.validation.Valid;
 
@@ -33,10 +33,10 @@ public class ClienteController {
     private IClienteService ClienteService;
 
     @GetMapping(value = "/ver/{id}")
-    public String ver(@PathVariable(value = "id") Long id, Map<String,Object> model, RedirectAttributes flash){
+    public String ver(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash) {
 
         Cliente cliente = ClienteService.findOne(id);
-        if (cliente == null){
+        if (cliente == null) {
             flash.addFlashAttribute("error", "El cliente No existe en la base de datos");
             return "redirect:/listar";
         }
@@ -48,9 +48,9 @@ public class ClienteController {
 
 
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
-    public String listar(@RequestParam(name = "page", defaultValue = "0") int page,  Model model) {
+    public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
 
-        Pageable pageRequest =  PageRequest.of(page, 4);
+        Pageable pageRequest = PageRequest.of(page, 4);
 
         Page<Cliente> clientes = ClienteService.findAll(pageRequest);  //recupera una lista paginada
 
@@ -78,13 +78,13 @@ public class ClienteController {
 
         if (id > 0) {
             cliente = ClienteService.findOne(id);
-            if (cliente == null){
-                flash.addFlashAttribute("error","El id del cliente No existe en la base de datos!");
+            if (cliente == null) {
+                flash.addFlashAttribute("error", "El id del cliente No existe en la base de datos!");
                 return "redirect:/listar";
 
             }
         } else {
-            flash.addFlashAttribute("error","El id del cliente No puede ser cero");
+            flash.addFlashAttribute("error", "El id del cliente No puede ser cero");
             return "redirect:/listar";
         }
         model.put("cliente", cliente);
@@ -103,17 +103,18 @@ public class ClienteController {
         }
 
         // *****************  codigo que guarda la imagen o foto  *******************************
-        if (!foto.isEmpty()){
+        if (!foto.isEmpty()) {
 
-            String rootPath = "C://Temp//uploads";
+            String uniqueFilename = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename(); //le da un nombre unico a la imagen
+            Path rootPath = Paths.get("uploads").resolve(uniqueFilename);
+
+            Path rootAbsolutePath = rootPath.toAbsolutePath();
 
             try {
-                byte[] bytes = foto.getBytes();
-                Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename()); //da la ruta donde se debe guardar la foto
-                Files.write(rutaCompleta, bytes);    //guarda la foto en la ruta especificada
-                flash.addFlashAttribute("info", "Ha subido correctamente '" + foto.getOriginalFilename() + "'");
+                Files.copy(foto.getInputStream(), rootAbsolutePath);
+                flash.addFlashAttribute("info", "Ha subido correctamente '" + uniqueFilename + "'");
 
-                cliente.setFoto(foto.getOriginalFilename());
+                cliente.setFoto(uniqueFilename);
             } catch (IOException e) {
                 e.printStackTrace();
             }
