@@ -40,6 +40,15 @@ public class Factura implements Serializable {
     @JoinColumn(name = "factura_id")  //crea la llave foranea en la tabla factura_items de la BD - se hace cuando la relacion es unidireccional
     private List<ItemFactura> items;
 
+    public Double getTotal(){
+        Double total = 0.0;
+        int size = items.size();
+        for (int i = 0; i < size; i++) {
+            total += items.get(i).calcularImporte();
+        }
+        return total;
+    }
+
 
     //inicializamos la lista items
     public Factura(){
