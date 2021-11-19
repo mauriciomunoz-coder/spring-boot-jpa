@@ -1,21 +1,19 @@
 package com.bolsaideas.springbootjpa.app.controllers;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.*;
 
 import javax.validation.Valid;
 
 import com.bolsaideas.springbootjpa.app.models.entity.Cliente;
 import com.bolsaideas.springbootjpa.app.models.service.IClienteService;
+import com.bolsaideas.springbootjpa.app.models.service.IUploadFileService;
 import com.bolsaideas.springbootjpa.app.util.paginator.PageRender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,23 +36,25 @@ public class ClienteController {
     @Autowired
     private IClienteService ClienteService;
 
+    @Autowired
+    private IUploadFileService uploadFileService;
+
+
+
     @GetMapping(value = "/uploads/{filename:.+}")
     // filename:.+  permite que se suba la imagen pero sin la extension jpg o png
     public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
 
-        Path pathFoto = Paths.get("uploads").resolve(filename).toAbsolutePath();
         Resource recurso = null;
 
         try {
 
-            recurso = new UrlResource(pathFoto.toUri());
-            if (!recurso.exists() && !recurso.isReadable()) {
-                throw new RuntimeException("Error No se puede cargar la imagen: " + pathFoto.toString());
-            }
+            recurso = uploadFileService.load(filename);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
                 .body(recurso);
     }
@@ -87,6 +87,7 @@ public class ClienteController {
         model.addAttribute("page", pageRender); //pasamos el objeto pageRender a la vista
         return "listar";
     }
+
 
     //redirige al formulario de crear cliente
     @GetMapping(value = "/form")
@@ -135,29 +136,26 @@ public class ClienteController {
             // ****** codigo que elimina la foto al cambiarla por otra "modificar cliente " *************************************
             if (cliente.getId() != null && cliente.getId() > 0 && cliente.getFoto() != null && cliente.getFoto().length() > 0) {
 
-                Path rootPath = Paths.get("uploads").resolve(cliente.getFoto()).toAbsolutePath();  // se usa para eliminar la foto del cliente
-                File archivo = rootPath.toFile();
 
-                if (archivo.exists() && archivo.canRead()) {
-                    archivo.delete();
-
-                }
+                uploadFileService.delete(cliente.getFoto());
             }
+
             //*************  fin codigo que elimina la foto al modificarla ************************
 
-            String uniqueFilename = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename(); //le da un nombre unico a la imagen
-            Path rootPath = Paths.get("uploads").resolve(uniqueFilename);
-
-            Path rootAbsolutePath = rootPath.toAbsolutePath();
+            String uniqueFilename = null;
 
             try {
-                Files.copy(foto.getInputStream(), rootAbsolutePath);
-                flash.addFlashAttribute("info", "Ha subido correctamente '" + uniqueFilename + "'");
 
-                cliente.setFoto(uniqueFilename);
+                uniqueFilename = uploadFileService.copy(foto);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
+            flash.addFlashAttribute("info", "Ha subido correctamente '" + uniqueFilename + "'");
+
+            cliente.setFoto(uniqueFilename);
         }
 
         //   ******************  fin codigo foto *********************
@@ -180,14 +178,11 @@ public class ClienteController {
 
             // ******** codigo para eliminar foto *****************
 
-            Path rootPath = Paths.get("uploads").resolve(cliente.getFoto()).toAbsolutePath();  // se usa para eliminar la foto del cliente
-            File archivo = rootPath.toFile();
 
-            if (archivo.exists() && archivo.canRead()) {
-                if (archivo.delete()) {
-                    flash.addFlashAttribute("info", "foto " + cliente.getFoto() + " eliminada con exito!");
-                }
+            if (uploadFileService.delete(cliente.getFoto())) {
+                flash.addFlashAttribute("info", "foto " + cliente.getFoto() + " eliminada con exito!");
             }
+
             //************ fin *************************
         }
         return "redirect:/listar";
