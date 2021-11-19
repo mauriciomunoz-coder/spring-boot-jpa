@@ -13,4 +13,11 @@ public interface IUploadFileService {
     public String copy(MultipartFile file)throws IOException, IOException;
 
     public boolean delete(String filename);
+
+
+
+    public void deletAll();      //elimina las fotos de la carpeta uploads al detener la aplicacion
+
+
+    public void init() throws IOException;  //crea la carpeta uploads automaticamente al iniciar la aplicacion
 }
