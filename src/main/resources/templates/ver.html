@@ -10,6 +10,13 @@
     <div class="card bg-light">
         <div class="card-header" th:text="${titulo}"></div>
         <div class="card-body">
+
+            <!-- link para crear una factura -->
+            <h4 class="card-title">
+                <a class="btn btn-success btn-xs" th:href="@{/factura/form/} + ${cliente.id}"
+                   th:text="'Crear Factura'"></a>
+            </h4>
+
             <img class="img-thumbnail rounded float-left" style="max-width: 25%;"
                  th:if="${#strings.length(cliente.foto) > 0}"
                  th:src="@{'/uploads/' + ${cliente.foto}}" th:alt="${cliente.foto}"/>
@@ -22,7 +29,8 @@
             </ul>
 
             <!-- si la lista de facturas esta vacia se muestra este mensaje -->
-            <div class="alert alert-info my-4" th:if="${#lists.isEmpty(cliente.facturas)}" th:text="'No hay facturas para el cliente: ' + ${cliente.nombre} + ${cliente.apellido} "></div>
+            <div class="alert alert-info my-4" th:if="${#lists.isEmpty(cliente.facturas)}"
+                 th:text="'No hay facturas para el cliente: ' + ${cliente.nombre} + ${cliente.apellido} "></div>
             <!-- si el cliente No tiene facturas No se muestra la tabla -->
             <table class="table table-bordered table stripead my-4" th:if="${not #lists.isEmpty(cliente.facturas)}">
                 <thead class="thead-inverse">
