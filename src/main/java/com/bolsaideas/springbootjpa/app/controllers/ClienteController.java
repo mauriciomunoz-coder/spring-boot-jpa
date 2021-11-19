@@ -1,5 +1,6 @@
 package com.bolsaideas.springbootjpa.app.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -54,7 +55,7 @@ public class ClienteController {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ recurso.getFilename() +"\"")
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
                 .body(recurso);
     }
 
@@ -131,6 +132,19 @@ public class ClienteController {
         // *****************  codigo que guarda la imagen o foto  *******************************
         if (!foto.isEmpty()) {
 
+            // ****** codigo que elimina la foto al cambiarla por otra "modificar cliente " *************************************
+            if (cliente.getId() != null && cliente.getId() > 0 && cliente.getFoto() != null && cliente.getFoto().length() > 0) {
+
+                Path rootPath = Paths.get("uploads").resolve(cliente.getFoto()).toAbsolutePath();  // se usa para eliminar la foto del cliente
+                File archivo = rootPath.toFile();
+
+                if (archivo.exists() && archivo.canRead()) {
+                    archivo.delete();
+
+                }
+            }
+            //*************  fin codigo que elimina la foto al modificarla ************************
+
             String uniqueFilename = UUID.randomUUID().toString() + "_" + foto.getOriginalFilename(); //le da un nombre unico a la imagen
             Path rootPath = Paths.get("uploads").resolve(uniqueFilename);
 
@@ -159,8 +173,22 @@ public class ClienteController {
     @GetMapping(value = "/eliminar/{id}")
     public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
         if (id > 0) {
+            Cliente cliente = ClienteService.findOne(id); // se usa para eliminar la foto del cliente
+
             ClienteService.delete(id);
             flash.addFlashAttribute("success", "Cliente eliminado con exito");
+
+            // ******** codigo para eliminar foto *****************
+
+            Path rootPath = Paths.get("uploads").resolve(cliente.getFoto()).toAbsolutePath();  // se usa para eliminar la foto del cliente
+            File archivo = rootPath.toFile();
+
+            if (archivo.exists() && archivo.canRead()) {
+                if (archivo.delete()) {
+                    flash.addFlashAttribute("info", "foto " + cliente.getFoto() + " eliminada con exito!");
+                }
+            }
+            //************ fin *************************
         }
         return "redirect:/listar";
     }
