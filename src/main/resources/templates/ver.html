@@ -21,7 +21,9 @@
                 <li class="list-group-item" th:text="${cliente.createAt}"></li>
             </ul>
 
+            <!-- si la lista de facturas esta vacia se muestra este mensaje -->
             <div class="alert alert-info my-4" th:if="${#lists.isEmpty(cliente.facturas)}" th:text="'No hay facturas para el cliente: ' + ${cliente.nombre} + ${cliente.apellido} "></div>
+            <!-- si el cliente No tiene facturas No se muestra la tabla -->
             <table class="table table-bordered table stripead my-4" th:if="${not #lists.isEmpty(cliente.facturas)}">
                 <thead class="thead-inverse">
                 <tr>
