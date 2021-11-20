@@ -1,6 +1,7 @@
 package com.bolsaideas.springbootjpa.app.models.service;
 
 import com.bolsaideas.springbootjpa.app.models.entity.Cliente;
+import com.bolsaideas.springbootjpa.app.models.entity.Producto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,4 +18,8 @@ public interface IClienteService {
     public Cliente findOne(Long id);
 
     public void delete(Long id);
+
+
+    //metodo para el autocomplete
+    public List<Producto> findByNombre(String term);
 }

@@ -2,7 +2,9 @@ package com.bolsaideas.springbootjpa.app.models.service;
 
 
 import com.bolsaideas.springbootjpa.app.models.dao.IClienteDao;
+import com.bolsaideas.springbootjpa.app.models.dao.IProductoDao;
 import com.bolsaideas.springbootjpa.app.models.entity.Cliente;
+import com.bolsaideas.springbootjpa.app.models.entity.Producto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,9 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Autowired
     IClienteDao clienteDao;
+
+    @Autowired
+    IProductoDao productoDao;
 
     @Transactional(readOnly = true)
     @Override
@@ -49,4 +54,18 @@ public class ClienteServiceImpl implements IClienteService {
     public void delete(Long id) {
         clienteDao.deleteById(id);
     }
+
+
+
+
+    //metodo para el autocomplete
+    @Transactional(readOnly = true)
+    @Override
+    public List<Producto> findByNombre(String term) {
+        return productoDao.findByNombre(term);
+    }
+
+
 }
+
+
