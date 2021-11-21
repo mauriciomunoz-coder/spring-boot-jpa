@@ -32,7 +32,7 @@
                 select: function (event, ui) {
                     // $("#buscar_producto").val(ui.item.label);
 
-                    if (itemsHelper.hasProducto(ui.item.value)){
+                    if (itemsHelper.hasProducto(ui.item.value)) {
                         itemsHelper.incrementaCantidad(ui.item.value, ui.item.precio);
                         return false;
                     }
@@ -68,6 +68,9 @@
             var cantidad = $("#cantidad_" + id).val() ? parseInt($("#cantidad_" + id).val()) : 0;
             $("#cantidad_" + id).val(++cantidad);
             this.calcularImporte(id, precio, cantidad);
+        },
+        eliminarLineaFactura: function (id) {
+            $("#row_" + id).remove();
         }
     }
 </script>
