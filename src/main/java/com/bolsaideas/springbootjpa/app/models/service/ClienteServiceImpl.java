@@ -2,8 +2,10 @@ package com.bolsaideas.springbootjpa.app.models.service;
 
 
 import com.bolsaideas.springbootjpa.app.models.dao.IClienteDao;
+import com.bolsaideas.springbootjpa.app.models.dao.IFacturaDao;
 import com.bolsaideas.springbootjpa.app.models.dao.IProductoDao;
 import com.bolsaideas.springbootjpa.app.models.entity.Cliente;
+import com.bolsaideas.springbootjpa.app.models.entity.Factura;
 import com.bolsaideas.springbootjpa.app.models.entity.Producto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,10 +20,13 @@ public class ClienteServiceImpl implements IClienteService {
 
 
     @Autowired
-    IClienteDao clienteDao;
+    private IClienteDao clienteDao;
 
     @Autowired
-    IProductoDao productoDao;
+    private IProductoDao productoDao;
+
+    @Autowired
+    private IFacturaDao facturaDao;
 
     @Transactional(readOnly = true)
     @Override
@@ -56,13 +61,17 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
 
-
-
     //metodo para el autocomplete
     @Transactional(readOnly = true)
     @Override
     public List<Producto> findByNombre(String term) {
         return productoDao.findByNombre(term);
+    }
+
+    @Override
+    @Transactional
+    public void saveFactura(Factura factura) {
+        facturaDao.save(factura);
     }
 
 
