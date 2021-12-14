@@ -28,10 +28,10 @@ public class FacturaController {
 
     //metodo para ver el detalle de una factura
     @GetMapping("/ver/{id}")
-    public String ver(@PathVariable(value = "id") Long id, Model model, RedirectAttributes flash){
+    public String ver(@PathVariable(value = "id") Long id, Model model, RedirectAttributes flash) {
         Factura factura = clienteService.findFacturaById(id);
 
-        if (factura == null){
+        if (factura == null) {
             flash.addFlashAttribute("error", "La factura NO existe en la BD");
             return "redirect:/listar";
         }
@@ -81,7 +81,7 @@ public class FacturaController {
             return "factura/form";
         }
 
-        if (itemId == null || itemId.length == 0){
+        if (itemId == null || itemId.length == 0) {
             model.addAttribute("titulo", "Crear Factura");
             model.addAttribute("error", "Error = 'La factura NO tiene items'");
             return "factura/form";
@@ -100,5 +100,21 @@ public class FacturaController {
         status.setComplete();
         flash.addFlashAttribute("success", "Factura creada con exito");
         return "redirect:/ver/" + factura.getCliente().getId();
+    }
+
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+
+        Factura factura = clienteService.findFacturaById(id);
+
+        if (factura != null) {
+            clienteService.deleteFactura(id);
+            flash.addFlashAttribute("success", "Factura eliminada con exito");
+            return "redirect:/ver/" + factura.getCliente().getId();
+        }
+        flash.addFlashAttribute("error", "La factura NO existe en la BD ");
+
+        return "redirect:/listar";
     }
 }
