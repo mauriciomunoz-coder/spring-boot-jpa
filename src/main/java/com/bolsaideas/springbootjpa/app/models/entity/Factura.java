@@ -1,6 +1,7 @@
 package com.bolsaideas.springbootjpa.app.models.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +17,7 @@ public class Factura implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @NotEmpty
     private String descripcion;
     private String observacion;
 
@@ -37,10 +38,11 @@ public class Factura implements Serializable {
 
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "factura_id")  //crea la llave foranea en la tabla factura_items de la BD - se hace cuando la relacion es unidireccional
+    @JoinColumn(name = "factura_id")
+    //crea la llave foranea en la tabla factura_items de la BD - se hace cuando la relacion es unidireccional
     private List<ItemFactura> items;
 
-    public Double getTotal(){
+    public Double getTotal() {
         Double total = 0.0;
         int size = items.size();
         for (int i = 0; i < size; i++) {
@@ -51,7 +53,7 @@ public class Factura implements Serializable {
 
 
     //inicializamos la lista items
-    public Factura(){
+    public Factura() {
         this.items = new ArrayList<ItemFactura>();
     }
 
@@ -104,7 +106,7 @@ public class Factura implements Serializable {
     }
 
     //agrega varios item a la lista items
-    public void addItemFactura(ItemFactura item){
+    public void addItemFactura(ItemFactura item) {
         this.items.add(item);
     }
 
